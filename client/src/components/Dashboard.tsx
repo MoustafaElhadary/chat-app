@@ -1,9 +1,9 @@
 import React from 'react'
-import Sidebar from './Sidebar';
-import OpenConversation from './OpenConversation';
-import { useConversations } from '../contexts/ConversationsProvider';
+import { useConversations } from '../contexts/ConversationsProvider'
+import OpenConversation from './OpenConversation'
+import Sidebar from './Sidebar'
 
-export default function Dashboard({ id }) {
+export default function Dashboard({ id }: { id: string }) {
   const { selectedConversation } = useConversations()
 
   return (

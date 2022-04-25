@@ -1,17 +1,18 @@
-import React, { useState, useCallback } from 'react'
-import { Form, InputGroup, Button } from 'react-bootstrap'
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Button, Form, InputGroup } from 'react-bootstrap';
 import { useConversations } from '../contexts/ConversationsProvider';
+import { SocketContext } from '../contexts/SocketProvider';
 
 export default function OpenConversation() {
   const [text, setText] = useState('')
-  const setRef = useCallback(node => {
-    if (node) {
-      node.scrollIntoView({ smooth: true })
+  const setRef = useCallback((node:React.LegacyRef<HTMLDivElement>) => {
+    if (node && node instanceof HTMLDivElement) {
+      node.scrollIntoView({behavior: 'smooth'})
     }
   }, [])
   const { sendMessage, selectedConversation } = useConversations()
 
-  function handleSubmit(e) {
+  function handleSubmit(e:React.FormEvent<HTMLFormElement>):void {
     e.preventDefault()
 
     sendMessage(
@@ -21,6 +22,8 @@ export default function OpenConversation() {
     setText('')
   }
 
+
+
   return (
     <div className="d-flex flex-column flex-grow-1">
       <div className="flex-grow-1 overflow-auto">
@@ -29,7 +32,7 @@ export default function OpenConversation() {
             const lastMessage = selectedConversation.messages.length - 1 === index
             return (
               <div
-                ref={lastMessage ? setRef : null}
+                // ref={lastMessage ? setRef : undefined}
                 key={index}
                 className={`my-1 d-flex flex-column ${message.fromMe ? 'align-self-end align-items-end' : 'align-items-start'}`}
               >
@@ -55,9 +58,9 @@ export default function OpenConversation() {
               onChange={e => setText(e.target.value)}
               style={{ height: '75px', resize: 'none' }}
             />
-            <InputGroup.Append>
+            <InputGroup.Text>
               <Button type="submit">Send</Button>
-            </InputGroup.Append>
+            </InputGroup.Text>
           </InputGroup>
         </Form.Group>
       </Form>
