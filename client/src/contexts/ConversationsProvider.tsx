@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import useLocalStorage from '../hooks/useLocalStorage'
+import { arrayEquality } from '../lib/helpers'
 import { Conversation, FormattedConversation, Message } from '../types'
 import { useContacts } from './ContactsProvider'
 import { SocketContext } from './SocketProvider'
@@ -140,15 +141,4 @@ export function ConversationsProvider({
       {children}
     </ConversationsContext.Provider>
   )
-}
-
-function arrayEquality(a: any[], b: any[]) {
-  if (a.length !== b.length) return false
-
-  a.sort()
-  b.sort()
-
-  return a.every((element, index) => {
-    return element === b[index]
-  })
 }

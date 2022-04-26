@@ -25,3 +25,23 @@ export type Recipient = {
     name: string;
     id:string
 }
+
+export type User = {
+    username: string
+    firstName: string
+    lastName: string
+    email: string
+    password: string
+  }
+  
+  
+  export type LoginResponse = {
+      message: string;
+      token: string;
+      error?: string
+  }
+  
+  export type AppStateType = {
+    user: User | null
+    token: string
+  }

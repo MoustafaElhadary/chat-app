@@ -21,7 +21,10 @@
     "jsx": "preserve"
   },
   "include": [
-    "src",
-    "socket"
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }
