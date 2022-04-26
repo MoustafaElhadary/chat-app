@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import { Raw } from 'typeorm';
 import { User } from '../entities/user';
 import { isAuthenticated } from '../middleware/auth';
 import { AuthenticatedRequest } from '../types';
@@ -11,7 +12,9 @@ router.get('/me', isAuthenticated, async (req: AuthenticatedRequest, res) => {
   try {
     const user = await User.findOne({
       where: {
-        email: req.email,
+        email: Raw((alias) => `LOWER(${alias}) Like LOWER(:value)`, {
+          value: `%${req.email}%`,
+        }),
       },
     });
     console.log({ email: req.email });
@@ -28,13 +31,17 @@ router.get('/me', isAuthenticated, async (req: AuthenticatedRequest, res) => {
   }
 });
 
-router.get('/login', async (req, res) => {
+router.post('/login', async (req, res) => {
   const { email, password, username } = req.body;
 
   try {
     // Check if user already exists
     const user = await User.findOne({
-      where: [{ email }, { username }],
+      where: {
+        email: Raw((alias) => `LOWER(${alias}) Like LOWER(:value)`, {
+          value: `%${email}%`,
+        }),
+      },
     });
 
     if (!user) {
@@ -56,7 +63,12 @@ router.get('/login', async (req, res) => {
     });
 
     return res.json({ accessToken });
-  } catch (error) {}
+  } catch (error) {
+    console.log({ error });
+    return res.status(500).json({
+      message: 'Something went wrong',
+    });
+  }
 });
 
 router.post('/signup', async (req, res) => {
@@ -65,7 +77,11 @@ router.post('/signup', async (req, res) => {
   try {
     // Check if user already exists
     const userExists = await User.findOne({
-      where: [{ email }, { username }],
+      where: {
+        email: Raw((alias) => `LOWER(${alias}) Like LOWER(:value)`, {
+          value: `%${email}%`,
+        }),
+      },
     });
 
     if (userExists) {

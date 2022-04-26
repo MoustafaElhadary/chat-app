@@ -36,8 +36,7 @@ export type User = {
   
   
   export type LoginResponse = {
-      message: string;
-      token: string;
+      accessToken: string;
       error?: string
   }
   
