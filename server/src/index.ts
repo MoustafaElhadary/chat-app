@@ -30,26 +30,25 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-  const id = socket.handshake.query.id;
-  socket.join(id);
+  const userId = socket.handshake.query.id;
+  socket.join(userId);
 
   socket.on('send-message', ({ recipients, text }) => {
     console.log({ recipients, text });
     recipients.forEach((recipient) => {
       const newRecipients = recipients.filter((r) => r !== recipient);
-      newRecipients.push(id);
+      newRecipients.push(userId);
       console.log({ newRecipients });
       socket.broadcast.to(recipient).emit('receive-message', {
         recipients: newRecipients,
-        sender: id,
+        sender: userId,
         text,
       });
     });
   });
 });
 
-
 server.listen(process.env.PORT || 7070, async () => {
-  await AppDataSource.initialize()
+  await AppDataSource.initialize();
   console.log('connected to DB');
 });

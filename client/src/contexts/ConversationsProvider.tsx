@@ -1,10 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import useLocalStorage from '../hooks/useLocalStorage'
 import { arrayEquality } from '../lib/helpers'
-import { Conversation, FormattedConversation, Message } from '../types'
+import { OldConversation, FormattedConversation, Message } from '../types'
 import { useContacts } from './ContactsProvider'
 import { SocketContext } from './SocketProvider'
-// import { socket } from './SocketProvider'
+import { v4 as uuidV4 } from 'uuid'
 
 interface ConversationsContextInterface {
   conversations: FormattedConversation[]
@@ -34,7 +34,7 @@ export function ConversationsProvider({
   id: string
   children: React.ReactNode
 }) {
-  const [conversations, setConversations] = useLocalStorage<Conversation[]>(
+  const [conversations, setConversations] = useLocalStorage<OldConversation[]>(
     'conversations',
     []
   )
@@ -44,7 +44,7 @@ export function ConversationsProvider({
 
   function createConversation(recipients: string[]) {
     setConversations((prevConversations) => {
-      return [...prevConversations, { recipients, messages: [] }]
+      return [...prevConversations, { recipients, messages: [], id: uuidV4() }]
     })
   }
 
@@ -77,7 +77,7 @@ export function ConversationsProvider({
         if (madeChange) {
           return newConversations
         } else {
-          return [...prevConversations, { recipients, messages: [newMessage] }]
+          return [...prevConversations, { recipients, messages: [newMessage], id: uuidV4()  }]
         }
       })
     },

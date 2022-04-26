@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import { meAPI } from '../api'
+import { useSocket } from '../contexts/SocketProvider'
 import { setToken, setUser } from '../redux/reducer/app'
 import { RootState } from '../redux/store'
 
 function AuthRoute({ children }: { children: React.ReactNode }): JSX.Element {
   const token = useSelector((state: RootState) => state.app.token)
   const [loading, setLoading] = useState(true)
+  const socket = useSocket()
+
   const dispatch = useDispatch()
 
   const fetchMe = async () => {
@@ -22,10 +25,12 @@ function AuthRoute({ children }: { children: React.ReactNode }): JSX.Element {
   }
 
   useEffect(() => {
-    console.log({ token })
     fetchMe()
+    //TODO: receive conversations and notifications
+    socket.on('receive-message', (message) => {
+      console.log({ message })
+    })
   }, [])
-
 
 
   if (loading) {
@@ -36,7 +41,7 @@ function AuthRoute({ children }: { children: React.ReactNode }): JSX.Element {
     )
   }
   if (token) {
-    return <React.Fragment> {children}</React.Fragment>
+    return <> {children}</>
   } else {
     return <Navigate to="/login" replace />
   }

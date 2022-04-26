@@ -3,7 +3,7 @@ import { AppStateType, User } from '../../types'
 
 const initialState: AppStateType = {
   user: null,
-  token: localStorage.getItem('chat-auth-token') || ''
+  token: localStorage.getItem('chat-auth-token') || '',
 }
 
 export const appSlice = createSlice({
